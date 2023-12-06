@@ -1,0 +1,26 @@
+name: Deploy Rules
+
+on:
+  push:
+    tags:
+      - '*.stage-health-check'
+      - '*.main-health-check'
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set profile based on tag
+        run: |
+          if [[ ${{ github.event_name }} == 'push' ]]; then
+            if [[ ${{ github.ref }} == 'refs/tags/*stage-health-check' ]]; then
+              echo "spring.profiles.active=stage" > application.properties
+            elif [[ ${{ github.ref }} == 'refs/tags/*main-health-check' ]]; then
+              echo "spring.profiles.active=prod" > application.properties
+            else
+              echo "spring.profiles.active=dev" > application.properties
+            fi
+          fi
