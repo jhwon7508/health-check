@@ -6,8 +6,6 @@ on:
       - '*-dev*'
       - '*-stg*'
       - '*-prod*'
-#  release:
-#    types: [created]
 
 jobs:
   build:
@@ -20,12 +18,15 @@ jobs:
             if [[ ${{ github.ref }} == 'refs/tags/*-dev*' ]]; then
               echo "spring.profiles.active=dev" > application-dev.yml
               REPO_NAME="alison-jung-dev"
+              echo "REPO_NAME set to $REPO_NAME"
             elif [[ ${{ github.ref }} == 'refs/tags/*-stg*' ]]; then
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
+              echo "REPO_NAME set to $REPO_NAME"
             elif [[ ${{ github.ref }} == 'refs/tags/*-prod*' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
+              echo "REPO_NAME set to $REPO_NAME"
             else
               echo "spring.profiles.active=local" > application-local.yml
               REPO_NAME="" 
