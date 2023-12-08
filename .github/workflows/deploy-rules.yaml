@@ -2,25 +2,51 @@ name: Deploy Rules
 
 on:
   push:
-    tags:
-      - '*.stage-health-check'
-      - '*.main-health-check'
-  release:
-    types: [created]
+    branches:
+      - develop
+      - stage
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set profile based on tag
+      - name: Set profile based on branch
         run: |
           if [[ ${{ github.event_name }} == 'push' ]]; then
-            if [[ ${{ github.ref }} == 'refs/tags/*stage-health-check' ]]; then
-              echo "spring.profiles.active=stage" > application.properties
-            elif [[ ${{ github.ref }} == 'refs/tags/*main-health-check' ]]; then
-              echo "spring.profiles.active=prod" > application.properties
+            if [[ ${{ github.ref }} == 'refs/heads/stage' ]]; then
+              echo "spring.profiles.active=stage" > application-stg.yml
+              REPO_NAME="alison-jung-stg"
+            elif [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+              echo "spring.profiles.active=prod" > application-prod.yml
+              REPO_NAME="alison-jung-prod"
             else
-              echo "spring.profiles.active=dev" > application.properties
+              echo "No changes required."
+              REPO_NAME="alison-jung-dev"
+            fi
+          fi
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build the Docker image
+        run: docker build -t deploy-build .
+
+      - name: Tag and Push image to ECR
+        run: |
+          if [[ -n $REPO_NAME ]]; then
+            if [[ $REPO_NAME == "alison-jung-stg" ]]; then
+              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
+              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
+            elif [[ $REPO_NAME == "alison-jung-prod" ]]; then
+              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
+              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
             fi
           fi
