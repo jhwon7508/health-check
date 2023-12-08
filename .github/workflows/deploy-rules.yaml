@@ -3,9 +3,9 @@ name: Deploy Rules
 on:
   push:
     tags:
-      - '*-dev.*'
-      - '*-stg.*'
-      - '*-prod.*'
+      - '*-dev*'
+      - '*-stg*'
+      - '*-prod*'
 #  release:
 #    types: [created]
 
@@ -17,13 +17,13 @@ jobs:
       - name: Set profile based on tag
         run: |
           if [[ ${{ github.event_name }} == 'push' ]]; then
-            if [[ ${{ github.ref }} == 'refs/tags/*-dev.*' ]]; then
+            if [[ ${{ github.ref }} == 'refs/tags/*-dev*' ]]; then
               echo "spring.profiles.active=dev" > application-dev.yml
               REPO_NAME="alison-jung-dev"
-            elif [[ ${{ github.ref }} == 'refs/tags/*-stg.*' ]]; then
+            elif [[ ${{ github.ref }} == 'refs/tags/*-stg*' ]]; then
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
-            elif [[ ${{ github.ref }} == 'refs/tags/*-prod.*' ]]; then
+            elif [[ ${{ github.ref }} == 'refs/tags/*-prod*' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
             else
