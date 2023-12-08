@@ -5,7 +5,6 @@ on:
     branches:
       - develop
       - stage
-      - main
     tags:
       - 'v*'
 
@@ -20,7 +19,7 @@ jobs:
             if [[ ${{ github.ref }} == 'refs/heads/stage' ]]; then
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
-            elif [[ ${{ github.ref }} == 'refs/heads/main' && ${{ github.event.ref_type }} == 'tag' ]]; then
+            elif [[ ${{ github.event.ref_type }} == 'tag' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
             fi
