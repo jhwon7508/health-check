@@ -5,8 +5,7 @@ on:
     branches:
       - develop
       - stage
-    tags:
-      - 'v*'
+      - main
 
 jobs:
   build:
@@ -19,7 +18,7 @@ jobs:
             if [[ ${{ github.ref }} == 'refs/heads/stage' ]]; then
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
-            elif [[ ${{ github.event.ref_type }} == 'tag' ]]; then
+            elif [[ ${{ github.ref }} == 'refs/heads/main' && ${{ github.event.ref_type }} == 'tag' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
             fi
@@ -37,14 +36,14 @@ jobs:
       - name: Build the Docker image
         run: docker build -t deploy-build .
 
-      - name: Tag the Docker image
+      - name: Tag and Push image to ECR
         run: |
           if [[ -n $REPO_NAME ]]; then
-            docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
-          fi
-
-      - name: Push image to ECR
-        run: |
-          if [[ -n $REPO_NAME ]]; then
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
+            if [[ $REPO_NAME == "alison-jung-stg" ]]; then
+              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
+              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
+            elif [[ $REPO_NAME == "alison-jung-prod" ]]; then
+              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
+              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
+            fi
           fi
