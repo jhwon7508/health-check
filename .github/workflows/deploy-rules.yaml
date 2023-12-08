@@ -6,6 +6,8 @@ on:
       - develop
       - stage
       - main
+    tags:
+      - 'v*'
 
 jobs:
   build:
