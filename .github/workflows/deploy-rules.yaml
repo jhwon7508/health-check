@@ -29,7 +29,7 @@ jobs:
               echo "REPO_NAME set to $REPO_NAME"
             else
               echo "spring.profiles.active=local" > application-local.yml
-              REPO_NAME="" 
+              REPO_NAME="alison-jung-dev" 
             fi
           fi
 
