@@ -5,7 +5,9 @@ on:
     branches:
       - develop
       - stage
-      - main
+      - main:
+          tags:
+            - 'v*'
 
 jobs:
   build:
@@ -18,15 +20,12 @@ jobs:
             if [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
               echo "spring.profiles.active=dev" > application-dev.yml
               REPO_NAME="alison-jung-dev"
-              echo "REPO_NAME set to $REPO_NAME"
             elif [[ ${{ github.ref }} == 'refs/heads/stage' ]]; then
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
-              echo "REPO_NAME set to $REPO_NAME"
-            elif [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+            elif [[ ${{ github.ref }} == 'refs/heads/main' && ${{ github.event.ref_type }} == 'tag' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
-              echo "REPO_NAME set to $REPO_NAME"
             fi
           fi
 
@@ -51,6 +50,5 @@ jobs:
       - name: Push image to ECR
         run: |
           if [[ -n $REPO_NAME ]]; then
-            echo "Pushing image to ECR: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest"
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
           fi
