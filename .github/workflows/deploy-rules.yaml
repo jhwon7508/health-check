@@ -21,6 +21,8 @@ jobs:
             elif [[ ${{ github.ref }} == 'refs/heads/main' && ${{ github.event.ref_type }} == 'tag' ]]; then
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
+            else
+              echo "No changes required."
             fi
           fi
 
