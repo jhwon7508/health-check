@@ -16,16 +16,14 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == 'push' ]]; then
             if [[ ${{ github.ref }} == 'refs/heads/stage' ]]; then
-              # Stage branch: Setting profile to stage and repository name to alison-jung-stg
               echo "spring.profiles.active=stage" > application-stg.yml
               REPO_NAME="alison-jung-stg"
             elif [[ ${{ github.ref }} == 'refs/heads/main' && ${{ github.event.ref_type }} == 'tag' ]]; then
-              # Main branch with tag: Setting profile to prod and repository name to alison-jung-prod
               echo "spring.profiles.active=prod" > application-prod.yml
               REPO_NAME="alison-jung-prod"
             else
-              # Any other changes or branches: No specific actions required
               echo "No changes required."
+              REPO_NAME="alison-jung-dev"
             fi
           fi
 
