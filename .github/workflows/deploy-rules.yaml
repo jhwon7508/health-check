@@ -28,7 +28,7 @@ jobs:
               REPO_NAME="alison-jung-prod"
             else
               echo "spring.profiles.active=local" > application-local.yml
-              REPO_NAME="alison-jung-local"
+              REPO_NAME="" 
             fi
           fi
 
@@ -46,8 +46,12 @@ jobs:
 
       - name: Tag the Docker image
         run: |
-          docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
+          if [[ -n $REPO_NAME ]]; then
+            docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
+          fi
 
       - name: Push image to ECR
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
+          if [[ -n $REPO_NAME ]]; then
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
+          fi
