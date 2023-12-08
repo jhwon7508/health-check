@@ -3,8 +3,9 @@ name: Deploy Rules
 on:
   push:
     tags:
-      - '*.stage-health-check'
-      - '*.main-health-check'
+      - '*.dev-health-check'
+      - '*.stg-health-check'
+      - '*.prod-health-check'
   release:
     types: [created]
 
@@ -16,11 +17,39 @@ jobs:
       - name: Set profile based on tag
         run: |
           if [[ ${{ github.event_name }} == 'push' ]]; then
-            if [[ ${{ github.ref }} == 'refs/tags/*stage-health-check' ]]; then
-              echo "spring.profiles.active=stage" > application.properties
-            elif [[ ${{ github.ref }} == 'refs/tags/*main-health-check' ]]; then
-              echo "spring.profiles.active=prod" > application.properties
+            if [[ ${{ github.ref }} == 'refs/tags/*.dev-health-check' ]]; then
+              echo "spring.profiles.active=dev" > application.yml-dev
+              REPO_NAME="alison-jung-dev"
+            elif [[ ${{ github.ref }} == 'refs/tags/*.stg-health-check' ]]; then
+              echo "spring.profiles.active=stage" > application.yml-stg
+              REPO_NAME="alison-jung-stg"
+            elif [[ ${{ github.ref }} == 'refs/tags/*.prod-health-check' ]]; then
+              echo "spring.profiles.active=prod" > application.yml-prod
+              REPO_NAME="alison-jung-prod"
             else
-              echo "spring.profiles.active=dev" > application.properties
+              echo "spring.profiles.active=local" > application.yml-local
+              REPO_NAME=""
             fi
+          fi
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build the Docker image
+        run: docker build -t deploy-build .
+
+      - name: Tag the Docker image
+        run: |
+          docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung:latest
+
+      - name: Push image to ECR
+        run: |
+          if [[ -n $REPO_NAME ]]; then
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${REPO_NAME}:latest
           fi
