@@ -37,16 +37,11 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build the Docker image
-        run: docker build -t deploy-build .
+        run: docker build -t $REPO_NAME .
 
       - name: Tag and Push image to ECR
         run: |
           if [[ -n $REPO_NAME ]]; then
-            if [[ $REPO_NAME == "alison-jung-stg" ]]; then
-              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
-              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-stg:latest
-            elif [[ $REPO_NAME == "alison-jung-prod" ]]; then
-              docker tag deploy-build:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
-              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
-            fi
+            docker tag $REPO_NAME:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$REPO_NAME:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$REPO_NAME:latest         
           fi
