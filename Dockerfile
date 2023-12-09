@@ -60,4 +60,4 @@ COPY run_application.sh /app/run_application.sh
 RUN chmod +x /app/run_application.sh
 
 # 실행 명령어 설정 (스크립트를 통해 Spring Boot 애플리케이션 실행)
-    CMD ["/app/run_application.sh"]
+CMD ["/app/run_application.sh"]
