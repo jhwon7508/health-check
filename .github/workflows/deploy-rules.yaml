@@ -39,10 +39,10 @@ jobs:
       - name: Build the Docker image
         run: |
           if [[ $REPO_NAME == "alison-jung-stg" ]]; then
-            docker build -t alison-jung-stg
+            docker build -t alison-jung-stg .
           elif [[ $REPO_NAME == "alison-jung-prod" ]]; then
-            docker build -t alison-jung-prod
-          fi
+            docker build -t alison-jung-prod .
+          fi  
 
       - name: Tag and Push image to ECR
         run: |
