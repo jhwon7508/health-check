@@ -30,7 +30,5 @@ jobs:
 
       - name: Tag and Push image to ECR
         run: |
-          if [[ -n $REPO_NAME ]]; then
-            docker tag alison-jung-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
-          fi
+          docker tag alison-jung-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/alison-jung-prod:latest
