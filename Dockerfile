@@ -41,6 +41,21 @@ RUN apt-get update && apt-get install -y \
 # gradlew를 사용하여 실행 가능한 JAR 파일 생성
 RUN ./gradlew bootJar
 
+# 린트 체크를 수행하는 스크립트를 추가
+COPY lint_check.sh /app/lint_check.sh
+RUN chmod +x /app/lint_check.sh
+RUN /app/lint_check.sh
+
+# 테스트를 수행하는 스크립트를 추가
+COPY test_check.sh /app/test_check.sh
+RUN chmod +x /app/test_check.sh
+RUN /app/test_check.sh
+
+# 코드 커버리지 리포트를 생성하는 스크립트를 추가
+COPY coverage_report.sh /app/coverage_report.sh
+RUN chmod +x /app/coverage_report.sh
+RUN /app/coverage_report.sh
+
 # 새로운 단계에서 adoptopenjdk:11-jdk-hotspot 베이스 이미지를 사용
 FROM adoptopenjdk:11-jdk-hotspot
 
