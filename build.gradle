@@ -22,10 +22,49 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//DB
+//	runtimeOnly 'mysql:mysql-connector-java'
+	runtimeOnly 'com.h2database:h2'
+
+	//JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	//QueryDSL
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-apt'
+
+	//JUnit 관련
+	testImplementation 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+	testImplementation 'org.assertj:assertj-core'
+
+	//로그
+	implementation 'ch.qos.logback:logback-classic'
+	implementation 'org.slf4j:slf4j-api'
+
+	//SpringSecurity
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+	//SpringActuator(health-check)
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	//lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
