@@ -4,4 +4,12 @@ spring:
   config:
     activate:
       on-profile: stage
-
+  datasource:
+    url: jdbc:mysql://localhost:3306/eCommerce
+    username: admin
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
