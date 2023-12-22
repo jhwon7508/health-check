@@ -8,7 +8,7 @@ CI/CD test
 - 서버 스택
     - [JVM]Java Spring Boot
 - Phase
-  - dev : 개발 (8080)
+  - dev : 개발 (8181)
   - stg : QA (8282)
   - prod : 운영 (8888)
  

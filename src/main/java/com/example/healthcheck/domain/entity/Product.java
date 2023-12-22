@@ -47,6 +47,9 @@ public class Product {
     private String description;
 
     @NotNull
+    private Boolean isSoldOut;
+
+    @NotNull
     private Boolean deleteYn;
 
     @NotNull

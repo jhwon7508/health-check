@@ -25,7 +25,7 @@ public class PopularProduct {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders orders;
 
     @NotNull
     private Long salesRate;

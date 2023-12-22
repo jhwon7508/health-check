@@ -46,11 +46,10 @@ public class User {
     private Long balance;
 
     @OneToMany(mappedBy = "user")
-    List<Order> orderList = new ArrayList<>();
+    List<Orders> ordersList = new ArrayList<>();
 
     @NotNull
     private Boolean deleteYn;
-
 
     private LocalDateTime createdAt;
     private String createdBy;

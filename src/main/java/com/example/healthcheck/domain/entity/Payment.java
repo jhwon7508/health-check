@@ -25,7 +25,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Orders orders;
 
     @NotNull
     private String paymentCode;

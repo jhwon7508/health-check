@@ -29,7 +29,14 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	//validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.hibernate.validator:hibernate-validator'
+
 	//DB
+	implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'junit:junit:4.13.1'
+	implementation 'org.testng:testng:7.1.0'
 //	runtimeOnly 'mysql:mysql-connector-java'
 	runtimeOnly 'com.h2database:h2'
 
@@ -46,6 +53,10 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-params'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 	testImplementation 'org.assertj:assertj-core'
+
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+	testImplementation 'org.mockito:mockito-core:4.5.1'
+
 
 	//로그
 	implementation 'ch.qos.logback:logback-classic'
@@ -67,7 +78,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	//swagger
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
