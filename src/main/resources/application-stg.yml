@@ -9,12 +9,19 @@ spring:
     driver-class-name : com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/commerce
     username: admin
-    password: ${DB_PASSWORD}
+    password: password1234
   jpa:
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.MySQL5Dialect
     show-sql: true
+  cache:
+    type: simple
+    cache-names: daily-popular
+    simple:
+      cache-name-configs:
+        products:
+          time-to-live: 86400000 # 24시간
 logging:
   level:
     org.springframework: DEBUG

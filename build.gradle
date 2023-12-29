@@ -57,7 +57,6 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 	testImplementation 'org.mockito:mockito-core:4.5.1'
 
-
 	//로그
 	implementation 'ch.qos.logback:logback-classic'
 	implementation 'org.slf4j:slf4j-api'
@@ -79,6 +78,9 @@ dependencies {
 
 	//swagger
 //	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	//cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

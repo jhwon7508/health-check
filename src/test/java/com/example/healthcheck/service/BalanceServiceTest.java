@@ -1,10 +1,10 @@
 package com.example.healthcheck.service;
 
-import com.example.healthcheck.domain.dto.request.BalanceDTO;
-import com.example.healthcheck.domain.dto.response.BalanceResponseDTO;
-import com.example.healthcheck.enums.ResponseCode;
-import com.example.healthcheck.restApi.repository.UserRepository;
-import com.example.healthcheck.restApi.service.BalanceService;
+import com.example.healthcheck.domain.user.dto.request.BalanceDTO;
+import com.example.healthcheck.domain.user.dto.response.BalanceResponseDTO;
+import com.example.healthcheck.domain.common.enums.ResponseCode;
+import com.example.healthcheck.domain.user.repository.UserRepository;
+import com.example.healthcheck.domain.user.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 public class BalanceServiceTest {
@@ -42,7 +41,7 @@ public class BalanceServiceTest {
         BalanceDTO balanceDto = new BalanceDTO("user123", 5000L);
 
         // userRepository의 메소드를 모킹하여, 특정 조건에서 DataAccessException 예외를 던지도록 설정
-        when(userRepository.chargeBalance(balanceDto)).thenThrow(new DataAccessException(ResponseCode.CODE_0002.getMessage()) {
+        when(balanceService.chargeBalance(balanceDto)).thenThrow(new DataAccessException(ResponseCode.CODE_0002.getMessage()) {
         });
 
         // 예외가 발생하는지 확인하는 테스트. 예외가 발생하면 테스트는 성공
@@ -75,8 +74,8 @@ public class BalanceServiceTest {
                 .build();
 
         // userRepository의 메소드 모킹
-        when(userRepository.getCurrentBalance(user)).thenReturn(expected.getUpdatedBalance());
-        when(userRepository.chargeBalance(any(BalanceDTO.class))).thenReturn(expected);
+        when(balanceService.checkBalance(user)).thenReturn(expected.getUpdatedBalance());
+        when(balanceService.chargeBalance(any(BalanceDTO.class))).thenReturn(expected);
 
         // 실제 서비스 메소드 호출 및 결과 검증.
         BalanceResponseDTO result = balanceService.chargeBalance(balanceDto);
@@ -101,7 +100,7 @@ public class BalanceServiceTest {
                 .build();
 
         // userRepository의 메소드 모킹
-        when(userRepository.checkBalance(userId)).thenReturn(expected);
+        when(balanceService.checkBalance()).thenReturn(expected);
 
         // 실제 서비스 메소드 호출 및 결과 검증
         BalanceResponseDTO result = balanceService.checkBalance(userId);

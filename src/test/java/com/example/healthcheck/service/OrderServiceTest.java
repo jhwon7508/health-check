@@ -1,22 +1,25 @@
 package com.example.healthcheck.service;
 
-import com.example.healthcheck.domain.dto.request.OrderDTO;
-import com.example.healthcheck.enums.ResponseCode;
-import com.example.healthcheck.restApi.repository.OrderRepository;
-import com.example.healthcheck.restApi.repository.PaymentRepository;
-import com.example.healthcheck.restApi.repository.ProductRepository;
-import com.example.healthcheck.restApi.repository.UserRepository;
-import com.example.healthcheck.restApi.service.OrderService;
+import com.example.healthcheck.domain.order.dto.request.OrderDTO;
+import com.example.healthcheck.domain.order.repository.OrderDetailRepository;
+import com.example.healthcheck.domain.order.repository.OrderRepository;
+import com.example.healthcheck.domain.order.event.DataPlatformCenter;
+import com.example.healthcheck.domain.order.service.OrderService;
+import com.example.healthcheck.domain.product.repository.ProductRepository;
+import com.example.healthcheck.domain.user.repository.UserRepository;
+import com.example.healthcheck.domain.common.enums.ResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
@@ -29,23 +32,24 @@ public class OrderServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private PaymentRepository paymentRepository;
-    @Mock
     private OrderRepository orderRepository;
-
+    @Mock
+    private OrderDetailRepository orderDetailRepository;
+    @Mock
+    private ApplicationEventPublisher dataPlatformCenter;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(userRepository, productRepository, paymentRepository, orderRepository);
+        orderService = new OrderService(userRepository, productRepository, orderRepository, orderDetailRepository, dataPlatformCenter);
     }
 
     // 주문 금액이 사용자 잔고보다 많아서 실패하는 경우 테스트
     @Test
     void orderFailsWhenBalanceInsufficient() {
         OrderDTO orderDTO = createTestOrderDTO();
-        when(userRepository.getCurrentBalance(orderDTO.getUserId())).thenReturn(5000L);
-        when(productRepository.findPriceByProductId("product1")).thenReturn(1000L);
+        when(userRepository.getBalanceByUserId(orderDTO.getUserId())).thenReturn(5000L);
+        when(productRepository.getById(123L).getPrice()).thenReturn(1000L);
 
         Exception exception = assertThrows(ResponseStatusException.class, () -> {
             orderService.placeOrder(orderDTO);
@@ -58,7 +62,7 @@ public class OrderServiceTest {
     @Test
     void orderFailsWhenQuantityExceedsStock() {
         OrderDTO orderDTO = createTestOrderDTO();
-        when(productRepository.getStockQuantity("product1")).thenReturn(5);
+        when(productRepository.getById(123L).getStockQuantity()).thenReturn(5);
 
         Exception exception = assertThrows(ResponseStatusException.class, () -> {
             orderService.placeOrder(orderDTO);
@@ -71,29 +75,14 @@ public class OrderServiceTest {
     @Test
     void orderFailsWhenProductIsSoldOut() {
         OrderDTO orderDTO = createTestOrderDTO();
-        when(productRepository.isProductSoldOut("product1")).thenReturn(true);
+        when(productRepository.getById(123L).getIsSoldOut()).thenReturn(true);
 
         Exception exception = assertThrows(ResponseStatusException.class, () -> {
             orderService.placeOrder(orderDTO);
         });
-
         assertEquals(ResponseCode.CODE_2002.getMessage(), exception.getMessage());
     }
 
-    // 외부 결제 시스템에 문제가 생겨서 실패하는 경우 테스트
-    @Test
-    void orderFailsDueToPaymentSystemError() {
-        OrderDTO orderDTO = createTestOrderDTO();
-        when(userRepository.getCurrentBalance(orderDTO.getUserId())).thenReturn(10000L);
-        when(productRepository.findPriceByProductId("product1")).thenReturn(1000L);
-        doThrow(new RuntimeException(ResponseCode.CODE_2005.getMessage())).when(paymentRepository).processPayment(any());
-
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            orderService.placeOrder(orderDTO);
-        });
-
-        assertEquals(ResponseCode.CODE_2005.getMessage(), exception.getMessage());
-    }
 
     // 필수 입력 정보가 누락되어 실패하는 경우 테스트
     @Test
@@ -111,15 +100,20 @@ public class OrderServiceTest {
     @Test
     void orderFailsWhenOrderCodeIsDuplicated() {
         OrderDTO orderDTO = createTestOrderDTO();
-        when(userRepository.getCurrentBalance(orderDTO.getUserId())).thenReturn(10000L);
-        when(productRepository.findPriceByProductId("product1")).thenReturn(1000L);
-        when(orderRepository.existsByOrderCode(anyString())).thenReturn(true);
+        when(userRepository.getBalanceByUserId(orderDTO.getUserId())).thenReturn(10000L);
+        when(productRepository.getById(123L).getPrice()).thenReturn(1000L);
+        when(orderRepository.existsById(anyLong())).thenReturn(true);
 
         Exception exception = assertThrows(ResponseStatusException.class, () -> {
             orderService.placeOrder(orderDTO);
         });
 
         assertEquals(ResponseCode.CODE_2003.getMessage(), exception.getMessage());
+    }
+
+    // 데이터 플랫폼 센터 전송에 실패하는 경우 테스트
+    @Test
+    void orderFailsDueToDataPlatformCenterError() {
     }
 
     // 테스트용 OrderDTO 객체 생성 도우미 메소드

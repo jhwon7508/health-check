@@ -1,13 +1,13 @@
 package com.example.healthcheck;
 
-import com.example.healthcheck.domain.dto.request.OrderDTO;
-import com.example.healthcheck.domain.dto.response.ProductResponseDTO;
-import com.example.healthcheck.domain.dto.request.BalanceDTO;
-import com.example.healthcheck.domain.dto.response.BalanceResponseDTO;
-import com.example.healthcheck.restApi.controller.CommerceController;
-import com.example.healthcheck.restApi.service.BalanceService;
-import com.example.healthcheck.restApi.service.OrderService;
-import com.example.healthcheck.restApi.service.ProductService;
+import com.example.healthcheck.domain.common.controller.CommerceController;
+import com.example.healthcheck.domain.order.dto.request.OrderDTO;
+import com.example.healthcheck.domain.order.service.OrderService;
+import com.example.healthcheck.domain.product.dto.response.ProductResponseDTO;
+import com.example.healthcheck.domain.product.service.ProductService;
+import com.example.healthcheck.domain.user.dto.request.BalanceDTO;
+import com.example.healthcheck.domain.user.dto.response.BalanceResponseDTO;
+import com.example.healthcheck.domain.user.service.BalanceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -68,14 +68,14 @@ public class CommerceControllerTest {
 
 	@Test
 	public void testGetProductById() throws Exception {
-		String productId = "product123";
+		Long productIdx = 123L;
 
 		ProductResponseDTO mockProduct = new ProductResponseDTO(/* 초기화 파라미터 */);
-		when(productService.getProductById(productId)).thenReturn(mockProduct);
+		when(productService.getProductById(productIdx)).thenReturn(mockProduct);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product/detail/" + productId))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product/detail/" + productIdx))
 				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.productId").value(productId));
+				.andExpect(MockMvcResultMatchers.jsonPath("$.productId").value(productIdx));
 		// 추가적인 상품 정보 검증
 	}
 
