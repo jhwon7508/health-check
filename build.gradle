@@ -60,6 +60,7 @@ dependencies {
 	//로그
 	implementation 'ch.qos.logback:logback-classic'
 	implementation 'org.slf4j:slf4j-api'
+	implementation 'ca.pjer:logback-awslogs-appender:1.6.0' // AWS Logs appender
 
 	//SpringSecurity
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -81,7 +82,6 @@ dependencies {
 
 	//cache
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

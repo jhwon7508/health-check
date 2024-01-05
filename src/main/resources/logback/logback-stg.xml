@@ -1,0 +1,32 @@
+<!-- Spring Boot 기본 로그백 설정 포함 -->
+<included>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- 애플리케이션 이름을 property로 설정 -->
+    <Property name="APP-NAME" value="project" />
+
+    <!-- 콘솔에 로그를 출력하기 위한 appender 정의 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 로그 메시지의 출력 형식 정의 -->
+            <pattern>[${APP-NAME}] [%thread] [%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 특정 JDBC 로그 카테고리에 대한 로그 레벨 설정 -->
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="INFO"/>
+    <logger name="jdbc.sqltiming" level="OFF"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+
+    <!-- log4j를 사용하는 JDBC 로깅 비활성화 -->
+    <logger name="log4jdbc.log4j2" level="OFF"/>
+
+    <!-- 애플리케이션의 기본 로그 레벨 설정 및 콘솔 appender 적용 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</included>
