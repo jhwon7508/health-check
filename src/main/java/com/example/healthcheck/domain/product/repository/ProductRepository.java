@@ -5,7 +5,10 @@ import com.example.healthcheck.domain.product.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Long findPriceByProductCode(String productCode);
@@ -14,13 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Product findByProductCode(String productCode);
 
-//@Repository
-//public interface ProductRepository {
-
-    //    ProductResponseDTO getProductById(Long productId);
-
-//    Integer getStockQuantity(String productId);
-//    Boolean isProductSoldOut(String productId);
-
-//    void setupProductStock(String productId, int stock);
+    @Query(value = "", nativeQuery = true)
+    List<Product> findDailyPopularProducts();
 }

@@ -25,11 +25,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final PopularProductService popularProductService;
 
-    @Cacheable(value = "products", key = "#productId")
+
     public ProductResponseDTO getProductById(Long productIdx) {
         try {
-            popularProductService.recordAccess(productIdx); // 캐시 접근 기록
-            popularProductService.registerCacheCreationTime("products::" + productIdx); // 캐시 접근 시간 기록
             Product product = productRepository.getById(productIdx);
             ProductResponseDTO result = ProductResponseDTO.builder()
                     .productIdx(productIdx)

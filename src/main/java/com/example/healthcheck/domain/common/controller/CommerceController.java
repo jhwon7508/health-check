@@ -1,5 +1,6 @@
 package com.example.healthcheck.domain.common.controller;
 
+import com.example.healthcheck.domain.product.dto.response.PopularProductDTO;
 import com.example.healthcheck.domain.product.service.PopularProductService;
 import com.example.healthcheck.domain.user.dto.request.BalanceDTO;
 import com.example.healthcheck.domain.order.dto.request.OrderDTO;
@@ -89,7 +90,7 @@ public class CommerceController {
     @GetMapping("/statistcs/popular-products")
     public ResponseEntity<?> getPopularProducts() {
         try {
-            List<Long> popularProducts = popularProductService.getPopularProducts();
+            List<PopularProductDTO> popularProducts = popularProductService.getPopularProducts();
             return ResponseEntity.ok(popularProducts);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(ResponseCode.CODE_0000);

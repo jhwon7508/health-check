@@ -50,7 +50,6 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
 
     @Override
     public void onApplicationEvent(DataPlatformProcessEvent event) {
-
         transmissionSuccessYn = event.isSuccessful();
     }
 
