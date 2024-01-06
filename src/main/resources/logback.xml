@@ -1,19 +1,52 @@
-<!-- Spring Boot 기본 로그백 설정 포함 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- 스프링 부트 기본 설정 포함 -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-    <!-- 애플리케이션 이름을 property로 설정 -->
+    <!-- AWS 로그 appender 설정 -->
+    <appender name="ASYNC_AWS_LOGS" class="ca.pjer.logback.AwsLogsAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <layout>
+            <pattern>%d{yyyyMMdd'T'HHmmss} %thread %level %logger{15} %msg%n</pattern>
+        </layout>
+        <!-- 프로파일 별 로그 그룹 설정 -->
+        <if condition='property("spring.profiles.active").contains("dev")'>
+            <then>
+                <logGroupName>${Log_Group_Name:dev}</logGroupName>
+            </then>
+        </if>
+        <if condition='property("spring.profiles.active").contains("stage")'>
+            <then>
+                <logGroupName>${Log_Group_Name:stg}</logGroupName>
+            </then>
+        </if>
+        <if condition='property("spring.profiles.active").contains("prod")'>
+            <then>
+                <logGroupName>${Log_Group_Name:prod}</logGroupName>
+            </then>
+        </if>
+        <!-- 기타 AWS 로그 설정 -->
+        <logStreamUuidPrefix>error-</logStreamUuidPrefix>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+    </appender>
+
+    <!-- 애플리케이션 이름 설정 -->
     <property name="APP-NAME" value="project" />
 
-    <!-- 콘솔에 로그를 출력하기 위한 appender 정의 -->
+    <!-- 콘솔 appender 설정 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- 로그 메시지의 출력 형식 정의 -->
             <pattern>[${APP-NAME}] [%thread] [%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
         </encoder>
     </appender>
 
-    <!-- 특정 JDBC 로그 카테고리에 대한 로그 레벨 설정 -->
+    <!-- JDBC 및 log4j 로거 설정 -->
     <logger name="jdbc" level="OFF"/>
     <logger name="jdbc.sqlonly" level="INFO"/>
     <logger name="jdbc.sqltiming" level="OFF"/>
@@ -21,12 +54,20 @@
     <logger name="jdbc.resultset" level="OFF"/>
     <logger name="jdbc.resultsettable" level="OFF"/>
     <logger name="jdbc.connection" level="OFF"/>
-
-    <!-- log4j를 사용하는 JDBC 로깅 비활성화 -->
     <logger name="log4jdbc.log4j2" level="OFF"/>
 
-    <!-- 애플리케이션의 기본 로그 레벨 설정 및 콘솔 appender 적용 -->
+    <!-- 스프링 프로파일별 로거 설정 -->
+    <springProfile name="dev">
+        <logger name="org.springframework" level="INFO" />
+        <logger name="inc.bfactory.kpop" level="INFO"/>
+        <root level="INFO">
+            <appender-ref ref="ASYNC_AWS_LOGS" />
+        </root>
+    </springProfile>
+
+    <!-- 기본 로그 레벨 및 appender 적용 -->
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="ASYNC_AWS_LOGS" />
     </root>
 </configuration>
