@@ -41,9 +41,9 @@ jobs:
       - name: Tag and Push image to ECR
         run: |
           if [ ${{ github.ref }} = 'refs/heads/main' ]; then
-            docker tag health-check-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/health-check-prod:latest
+            docker tag health-check-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
           elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
-            docker tag health-check-stg:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/health-check-stg:latest
+            docker tag health-check-stg:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ap-northeast-2.amazonaws.com/health-check-stg:latest
           fi
