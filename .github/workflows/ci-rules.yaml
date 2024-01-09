@@ -42,5 +42,5 @@ jobs:
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
           elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
             docker tag health-check-stg:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
-            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ap-northeast-2.amazonaws.com/health-check-stg:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
           fi
