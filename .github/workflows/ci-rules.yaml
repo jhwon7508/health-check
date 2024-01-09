@@ -1,15 +1,12 @@
 name: Deploy Rules
-
 on:
   push:
     branches:
       - main
       - stage
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Set profile based on branch
         run: |
