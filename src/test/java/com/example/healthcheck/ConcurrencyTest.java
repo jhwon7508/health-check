@@ -46,6 +46,26 @@ public class ConcurrencyTest {
     // 여러 스레드에서 동시에 잔액 차감을 시도할 때 음수 잔액이 발생하지 않는지 테스트
 
 
+    // mockito @SpyBean
+
+    //@TransactionalEventListener
+
+    // Multicaster
+
+    // ApplicationListener
+
+
+    //localDateTime mock clock -> 타임 머신 테스트
+
+
+    //CQRS 패턴
+
+    // 주문 예시
+    // tr1 상품돌며서 재고 차감을 바로 하는게 아니라, redis에 expire 걸어 미수 재고 잡기
+//    문제가 생겨서 잡혀 있던 애들은 나중에 해방
+//    tr2 주문을 생성 / 포인트 차감 -> 얘만 롤백 시키는 이벤트 발행
+//    tr3 redis 미수재고 돌면서 직접 지우면서 실제 재고 차감
+
     @Test
     public void testConcurrentOrderProcessing() throws Exception {
         String userId = "user123";

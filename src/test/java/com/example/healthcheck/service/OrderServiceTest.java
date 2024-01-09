@@ -55,7 +55,7 @@ public class OrderServiceTest {
             orderService.placeOrder(orderDTO);
         });
 
-        assertEquals(ResponseCode.CODE_1002.getMessage(), exception.getMessage());
+        assertEquals(ResponseCode.INSUFFICIENT_BALANCE.getMessage(), exception.getMessage());
     }
 
     // 주문 수량이 상품 재고보다 많아서 실패하는 경우 테스트
@@ -68,7 +68,7 @@ public class OrderServiceTest {
             orderService.placeOrder(orderDTO);
         });
 
-        assertEquals(ResponseCode.CODE_2002.getMessage(), exception.getMessage());
+        assertEquals(ResponseCode.OUT_OF_STOCK.getMessage(), exception.getMessage());
     }
 
     // 주문한 상품이 매진(isSoldOut=true)이라서 실패하는 경우 테스트
@@ -80,7 +80,7 @@ public class OrderServiceTest {
         Exception exception = assertThrows(ResponseStatusException.class, () -> {
             orderService.placeOrder(orderDTO);
         });
-        assertEquals(ResponseCode.CODE_2002.getMessage(), exception.getMessage());
+        assertEquals(ResponseCode.OUT_OF_STOCK.getMessage(), exception.getMessage());
     }
 
 
@@ -93,7 +93,7 @@ public class OrderServiceTest {
             orderService.placeOrder(orderDTO);
         });
 
-        assertEquals(ResponseCode.CODE_2004.getMessage(), exception.getMessage());
+        assertEquals(ResponseCode.MISSING_INFO.getMessage(), exception.getMessage());
     }
 
     // 주문 코드(orderCode)가 중복되는 경우 실패하는 경우 테스트
@@ -108,7 +108,7 @@ public class OrderServiceTest {
             orderService.placeOrder(orderDTO);
         });
 
-        assertEquals(ResponseCode.CODE_2003.getMessage(), exception.getMessage());
+        assertEquals(ResponseCode.DUPLICATE_ORDER.getMessage(), exception.getMessage());
     }
 
     // 데이터 플랫폼 센터 전송에 실패하는 경우 테스트

@@ -24,7 +24,7 @@ public class BalanceService {
         try {
             User user = userRepository.findByUserId(balanceDto.getUserId());
             if (user == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseCode.CODE_0001.toString());
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseCode.INVALID_USER.toString());
             }
             Long originalBalance = user.getBalance();
             Long updatedBalance = originalBalance + balanceDto.getBalance();
@@ -37,7 +37,7 @@ public class BalanceService {
                     .updatedBalance(updatedBalance)
                     .build();
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_0002.toString());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.DATABASE_ERROR.toString());
         }
     }
 
@@ -45,7 +45,7 @@ public class BalanceService {
         try {
             User user = userRepository.findByUserId(userId);
             if (user == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseCode.CODE_0001.toString());
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseCode.INVALID_USER.toString());
             }
             Long balance = user.getBalance();
 
@@ -54,7 +54,7 @@ public class BalanceService {
                     .originalBalance(balance)
                     .build();
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_0002.toString());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.DATABASE_ERROR.toString());
         }
     }
 }

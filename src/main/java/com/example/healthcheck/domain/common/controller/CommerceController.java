@@ -48,7 +48,7 @@ public class CommerceController {
             BalanceResponseDTO balance = balanceService.checkBalance(userId);
             return ResponseEntity.ok(balance);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseCode.CODE_0002);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseCode.DATABASE_ERROR);
         }
     }
 
@@ -59,7 +59,7 @@ public class CommerceController {
             ProductResponseDTO product = productService.getProductById(productIdx);
             return ResponseEntity.ok(product);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ResponseCode.CODE_2001);
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ResponseCode.INVALID_PRODUCT);
         }
     }
 
@@ -77,12 +77,12 @@ public class CommerceController {
             OrderResponseDTO result = orderService.placeOrder(orderRequest);
             return ResponseEntity.ok(result);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ResponseCode.CODE_1001);
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ResponseCode.INVALID_ORDER);
         } catch (ExecutionException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseCode.CODE_0000);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseCode.SYSTEM_ERROR);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();  // 중단 상태를 복구
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseCode.CODE_0000);
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseCode.SYSTEM_ERROR);
         }
     }
 
@@ -93,7 +93,7 @@ public class CommerceController {
             List<PopularProductDTO> popularProducts = popularProductService.getPopularProducts();
             return ResponseEntity.ok(popularProducts);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(ResponseCode.CODE_0000);
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(ResponseCode.SYSTEM_ERROR);
         }
     }
 

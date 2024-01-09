@@ -78,7 +78,7 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
 
         // 잔액 부족 시 예외 처리
         if (userBalance < orderTotal)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ResponseCode.CODE_1002.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ResponseCode.INSUFFICIENT_BALANCE.getMessage());
 
         // 잔액 차감 및 주문 기록
         Long newBalance = deductBalance(user, orderTotal);
@@ -153,7 +153,7 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
 
             if (product == null) {
                 // 상품이 존재하지 않는 경우 예외 처리
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_2001.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.INVALID_PRODUCT.getMessage());
             }
 
             // 상품의 현재 재고 수량을 가져옵니다.
@@ -162,7 +162,7 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
             // 주문 수량이 재고 수량보다 많거나 같은지 확인합니다.
             if (currentStock < orderedQuantity) {
                 // 재고가 부족한 경우 예외 처리
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_2002.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.OUT_OF_STOCK.getMessage());
             }
             sufficientStockProducts.add(product);
         }

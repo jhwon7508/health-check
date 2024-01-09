@@ -41,7 +41,7 @@ public class ProductService {
             result.setIsSoldOut(isSoldOut);
             return result;
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_0002.toString());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.DATABASE_ERROR.toString());
         }
     }
 
@@ -65,7 +65,7 @@ public class ProductService {
 
             return resultPage;
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.CODE_0002.toString());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ResponseCode.DATABASE_ERROR.toString());
         }
     }
 
