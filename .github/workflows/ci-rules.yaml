@@ -3,6 +3,7 @@ name: Build Rules
 on:
   pull_request:
     branches:
+      - main
       - stage
       - develop
 jobs:
