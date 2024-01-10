@@ -1,0 +1,47 @@
+name: Build Rules
+
+on:
+  pull_request:
+    branches:
+      - stage
+      - develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set profile based on branch
+        run: |
+          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+            echo "spring.profiles.active=prod" > application-prod.yml
+            REPO_NAME="health-check-prod"
+          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+            echo "spring.profiles.active=stage" > application-stg.yml
+            REPO_NAME="health-check-stg"
+          fi
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com
+
+      - name: Build the Docker image
+        run: |
+          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+            docker build -t health-check-prod .
+          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+            docker build -t health-check-stg .
+          fi
+
+      - name: Tag and Push image to ECR
+        run: |
+          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+            docker tag health-check-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
+          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+            docker tag health-check-stg:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
+          fi

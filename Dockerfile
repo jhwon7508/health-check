@@ -41,6 +41,21 @@ RUN apt-get update && apt-get install -y \
 # gradlew를 사용하여 실행 가능한 JAR 파일 생성
 RUN ./gradlew bootJar
 
+# 린트 체크를 수행하는 스크립트를 추가
+COPY lint_check.sh /app/lint_check.sh
+RUN chmod +x /app/lint_check.sh
+RUN /app/lint_check.sh
+
+# 테스트를 수행하는 스크립트를 추가
+COPY test_check.sh /app/test_check.sh
+RUN chmod +x /app/test_check.sh
+RUN /app/test_check.sh
+
+# 코드 커버리지 리포트를 생성하는 스크립트를 추가
+COPY coverage_report.sh /app/coverage_report.sh
+RUN chmod +x /app/coverage_report.sh
+RUN /app/coverage_report.sh
+
 # 새로운 단계에서 adoptopenjdk:11-jdk-hotspot 베이스 이미지를 사용
 FROM adoptopenjdk:11-jdk-hotspot
 
@@ -48,7 +63,7 @@ FROM adoptopenjdk:11-jdk-hotspot
 WORKDIR /app
 
 # 호스트 머신의 포트와 연결될 포트 설정
-EXPOSE 1111
+EXPOSE 3000
 
 # builder stage에서 생성된 JAR 파일을 복사하여 이미지 내부로 가져옴
 COPY --from=builder /build/build/libs/health-check-0.0.1-SNAPSHOT.jar /app/health-check-0.0.1-SNAPSHOT.jar
