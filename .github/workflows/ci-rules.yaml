@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: Set profile based on branch
         run: |
-          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+          if [ ${{ github.ref }} = 'refs/heads/stage' ]; then
             echo "spring.profiles.active=prod" > application-prod.yml
             REPO_NAME="health-check-prod"
-          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+          elif [ ${{ github.ref }} = 'refs/heads/develop' ]; then
             echo "spring.profiles.active=stage" > application-stg.yml
             REPO_NAME="health-check-stg"
           fi
@@ -30,18 +30,18 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+          if [ ${{ github.ref }} = 'refs/heads/stage' ]; then
             docker build -t health-check-prod .
-          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+          elif [ ${{ github.ref }} = 'refs/heads/develop' ]; then
             docker build -t health-check-stg .
           fi
 
       - name: Tag and Push image to ECR
         run: |
-          if [ ${{ github.ref }} = 'refs/heads/main' ]; then
+          if [ ${{ github.ref }} = 'refs/heads/stage' ]; then
             docker tag health-check-prod:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-prod:latest
-          elif [ ${{ github.ref }} = 'refs/heads/stage' ]; then
+          elif [ ${{ github.ref }} = 'refs/heads/develop' ]; then
             docker tag health-check-stg:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/health-check-stg:latest
           fi
