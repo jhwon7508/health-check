@@ -3,6 +3,7 @@ name: Build Rules
 on:
   push:
     branches:
+      - main
       - stage
       - develop
 jobs:
