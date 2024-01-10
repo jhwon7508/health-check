@@ -1,9 +1,10 @@
-name: Deploy Rules
+name: Build Rules
+
 on:
-  push:
+  pull_request:
     branches:
-      - main
       - stage
+      - develop
 jobs:
   build:
     runs-on: ubuntu-latest

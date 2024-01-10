@@ -63,7 +63,7 @@ FROM adoptopenjdk:11-jdk-hotspot
 WORKDIR /app
 
 # 호스트 머신의 포트와 연결될 포트 설정
-EXPOSE 1111
+EXPOSE 3000
 
 # builder stage에서 생성된 JAR 파일을 복사하여 이미지 내부로 가져옴
 COPY --from=builder /build/build/libs/health-check-0.0.1-SNAPSHOT.jar /app/health-check-0.0.1-SNAPSHOT.jar
