@@ -68,11 +68,5 @@ EXPOSE 3000
 # builder stage에서 생성된 JAR 파일을 복사하여 이미지 내부로 가져옴
 COPY --from=builder /build/build/libs/health-check-0.0.1-SNAPSHOT.jar /app/health-check-0.0.1-SNAPSHOT.jar
 
-# 스크립트 파일을 Docker 이미지의 /app 디렉토리로 복사
-COPY run_application.sh /app/run_application.sh
-
-# 스크립트 실행 권한 부여
-RUN chmod +x /app/run_application.sh
-
-# 실행 명령어 설정 (스크립트를 통해 Spring Boot 애플리케이션 실행)
-CMD ["/app/run_application.sh"]
+# 실행 명령어 설정 (환경 변수에 따라 Spring 프로파일을 설정하고 Java 애플리케이션 실행)
+CMD ["java", "-jar", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", "health-check-0.0.1-SNAPSHOT.jar"]
