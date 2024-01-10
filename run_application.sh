@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $GITHUB_EVENT_NAME == 'pull_request' ]]; then
+if [[ $GITHUB_EVENT_NAME == 'push' ]]; then
     if [[ $GITHUB_REF == 'refs/tags/*.dev-health-check' ]]; then
           SPRING_PROFILES_ACTIVE=dev
     elif [[ $GITHUB_REF == 'refs/tags/*.stg-health-check' ]]; then
