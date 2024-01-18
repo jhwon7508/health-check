@@ -6,10 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface OrderRepository extends JpaRepository<Orders, Long>, JpaSpecificationExecutor<Orders> {
     Orders findByOrderCode(String orderCode);
-
-    Orders findByOrderId(String orderId);
 }
-
 //import com.example.healthcheck.domain.order.entity.Orders;
 //import org.springframework.stereotype.Repository;
 //

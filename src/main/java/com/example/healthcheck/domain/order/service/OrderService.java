@@ -170,7 +170,7 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
         return sufficientStockProducts;
     }
 
-    private void createAndSaveOrderDetails(String orderId, OrderDTO orderDTO) {
+    private void createAndSaveOrderDetails(String orderCode, OrderDTO orderDTO) {
         for (Map.Entry<String, Integer> entry : orderDTO.getProductQuantities().entrySet()) {
             String productCode = entry.getKey();
             Integer orderedQuantity = entry.getValue();
@@ -180,9 +180,9 @@ public class OrderService implements ApplicationListener<DataPlatformProcessEven
 
             // OrderDetail 생성
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrders(orderRepository.findByOrderId(orderId));
+            orderDetail.setOrders(orderRepository.findByOrderCode(orderCode));
             orderDetail.setProduct(product);
-            orderDetail.setOrderDetailCode(orderId + "-" + orderDTO.getProductQuantities().keySet());
+            orderDetail.setOrderDetailCode(orderCode + "-" + orderDTO.getProductQuantities().keySet());
             orderDetail.setOrderQuantity(orderedQuantity);
             orderDetail.setOrderPrice(product.getPrice() * orderedQuantity);
             orderDetail.setDeleteYn(false);

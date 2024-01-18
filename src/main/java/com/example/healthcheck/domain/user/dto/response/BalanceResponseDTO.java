@@ -9,9 +9,9 @@ import javax.validation.constraints.Min;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class BalanceResponseDTO {
     private String userId;
     private Long originalBalance;
     private Long updatedBalance;
-
 }

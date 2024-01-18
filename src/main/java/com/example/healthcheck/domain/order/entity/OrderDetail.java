@@ -46,4 +46,10 @@ public class OrderDetail {
     @NotNull
     private Boolean deleteYn;
 
+    @NotNull
+    private LocalDateTime createdAt;
+
+    @NotNull
+    private String createdBy;
+
 }

@@ -3,6 +3,7 @@ package com.example.healthcheck.domain.product.service;
 import com.example.healthcheck.domain.product.dto.response.PopularProductDTO;
 import com.example.healthcheck.domain.product.entity.Product;
 import com.example.healthcheck.domain.product.repository.ProductRepository;
+import com.example.healthcheck.domain.product.repository.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -21,6 +22,7 @@ public class PopularProductService {
 
     private CacheManager cacheManager;
     private final ProductRepository productRepository;
+//    private final ProductRepositoryCustom productRepositoryCustom;
 
     @Cacheable(value = "popularProducts")
     public List<PopularProductDTO> getPopularProducts() {
