@@ -6,11 +6,21 @@ spring:
     activate:
       on-profile: stage
 
+#  datasource:
+#    driver-class-name : com.mysql.cj.jdbc.Driver
+#    url: ${DB_URL}
+#    username: admin
+#    password: ${DB_PASSWORD}
+
   datasource:
-    driver-class-name : com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: admin
-    password: ${DB_PASSWORD}
+    url: jdbc:h2:mem:test_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
   jpa:
     hibernate:
       ddl-auto: update
