@@ -1,0 +1,11 @@
+version: '3'
+services:
+  myapp:
+    image: myapp
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - JASYPT_ENCRYPTOR_PASSWORD=암호화키
+      - DB_URL=jdbc:mysql://my-database.cl29btmnabuy.us-east-1.rds.amazonaws.com:3306/commerce
+      - DB_PASSWORD=ENC(암호화된비밀번호)
+    ports:
+      - "3000:8888"

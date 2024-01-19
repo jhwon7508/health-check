@@ -1,123 +1,88 @@
 package com.example.healthcheck.service;
 
 import com.example.healthcheck.domain.product.dto.response.PopularProductDTO;
+import com.example.healthcheck.domain.product.entity.Product;
+import com.example.healthcheck.domain.product.repository.ProductRepository;
 import com.example.healthcheck.domain.product.service.PopularProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PopularProductServiceTest {
-
-    private PopularProductService popularProductService;
+public class PopularProductServiceTest {
 
     @Mock
     private CacheManager cacheManager;
 
+    @Mock
+    private ProductRepository productRepository;
+
+    @InjectMocks
+    private PopularProductService popularProductService;
+
     @BeforeEach
     void setUp() {
-        // Mockito 초기화
-        MockitoAnnotations.initMocks(this);
-//        popularProductService = new PopularProductService();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getPopularProductsReturnsTop5Products() {
-        // Arrange
-        Map<Long, Map<LocalDate, Integer>> sampleAccessCounts = new ConcurrentHashMap<>();
-        for (long i = 1; i <= 10; i++) {
-            Map<LocalDate, Integer> dailyCounts = new ConcurrentHashMap<>();
-            dailyCounts.put(LocalDate.now(), (int) i * 10); // 상품별 접근 횟수 설정
-            sampleAccessCounts.put(i, dailyCounts);
-        }
+    void getPopularProducts() {
+        // 테스트 데이터
+        List<Product> mockPopularProducts = Collections.singletonList(new Product());
 
+        // productRepository의 findDailyPopularProducts 메소드 호출 시, mockPopularProducts를 반환하도록 설정
+        when(productRepository.findDailyPopularProducts()).thenReturn(mockPopularProducts);
 
-        // 캐시 관련 가짜 객체 생성
-//        when(cacheManager.getCache("cache1")).thenReturn(createCache("cache1"));
-//        when(cacheManager.getCache("cache2")).thenReturn(createCache("cache2"));
-//        when(cacheManager.getCache("cache3")).thenReturn(createCache("cache3"));
+        // 실제 서비스 메소드 호출.
+        List<PopularProductDTO> result = popularProductService.getPopularProducts();
 
-        // Act
-        List<PopularProductDTO> popularProducts = popularProductService.getPopularProducts();
-
-        // Assert
-        assertThat(popularProducts).hasSize(5);
-//        assertThat(popularProducts).containsExactly(10L, 9L, 8L, 7L, 6L);
-    }
-
-
-    @Test
-    void recordAccessIncrementsAccessCount() {
-        // Arrange
-        Long productId = 1L;
-
-        // Act
-//        popularProductService.recordAccess(productId);
-//        popularProductService.recordAccess(productId);
-//        popularProductService.recordAccess(productId);
-
-        // Assert
-//        Map<LocalDate, Integer> accessCount = popularProductService.getAccessCounts().get(productId);
-//        assertThat(accessCount).containsOnlyKeys(LocalDate.now());
-//        assertThat(accessCount).containsValues(3);
+        // 결과 검증: 서비스 메소드가 정상적으로 데이터를 반환하는지 확인
+        assertNotNull(result);
+        assertEquals(mockPopularProducts.size(), result.size());
     }
 
     @Test
-    void isCacheOldReturnsTrueForOldCache() {
-        // Arrange
-//        popularProductService.registerCacheCreationTime("oldCache");
+    void evictOldCaches() {
+        // 테스트 데이터
+        Cache mockCache = mock(Cache.class);
 
-        // Act
-//        boolean result = popularProductService.isCacheOld("oldCache");
+        // cacheManager의 getCacheNames 메소드 호출 시, cacheName을 반환하도록 설정
+        when(cacheManager.getCacheNames()).thenReturn(Collections.singletonList("popularProducts"));
 
-        // Assert
-//        assertThat(result).isTrue();
+        // cacheManager의 getCache 메소드 호출 시, mockCache를 반환하도록 설정
+        when(cacheManager.getCache("popularProducts")).thenReturn(mockCache);
+
+        // 실제 서비스 메소드 호출.
+        assertDoesNotThrow(() -> popularProductService.evictOldCaches());
+
+        // verify를 사용하여 cacheManager의 clear 메소드가 호출되었는지 확인
+        verify(mockCache, times(1)).clear();
     }
 
     @Test
-    void isCacheOldReturnsFalseForRecentCache() {
-        // Arrange
-//        popularProductService.registerCacheCreationTime("recentCache");
+    void cacheManagerReturnsNull() {
+        // 테스트 데이터
+        String cacheName = "popularProducts";
 
-        // Act
-//        boolean result = popularProductService.isCacheOld("recentCache");
+        // cacheManager의 getCacheNames 메소드 호출 시, cacheName을 반환하도록 설정
+        when(cacheManager.getCacheNames()).thenReturn(Collections.singletonList(cacheName));
 
-        // Assert
-//        assertThat(result).isFalse();
-    }
+        // cacheManager의 getCache 메소드 호출 시 null 반환
+        when(cacheManager.getCache(cacheName)).thenReturn(null);
 
-    @Test
-    void evictOldCachesClearsOldCache() {
-        // Arrange
-        Cache oldCache = createCache("oldCache");
-        Cache recentCache = createCache("recentCache");
-        when(cacheManager.getCacheNames()).thenReturn(List.of("oldCache", "recentCache"));
-        when(cacheManager.getCache("oldCache")).thenReturn(oldCache);
-        when(cacheManager.getCache("recentCache")).thenReturn(recentCache);
-//        popularProductService.registerCacheCreationTime("oldCache");
-//        popularProductService.registerCacheCreationTime("recentCache");
+        // 실제 서비스 메소드 호출.
+        assertDoesNotThrow(() -> popularProductService.evictOldCaches());
 
-        // Act
-        popularProductService.evictOldCaches();
-
-        // Assert
-        verify(oldCache, times(1)).clear();
-        verify(recentCache, never()).clear();
-    }
-
-    private Cache createCache(String cacheName) {
-        Cache cache = mock(Cache.class);
-        when(cache.getName()).thenReturn(cacheName);
-        return cache;
+        // verify를 사용하여 cacheManager의 clear 메소드가 호출되지 않았는지 확인
+        verifyNoInteractions(cacheManager);
     }
 }

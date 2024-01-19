@@ -59,4 +59,8 @@ public class User {
     private LocalDateTime updatedAt;
     private String updatedBy;
 
+    public User(String user, Long amount) {
+        this.userId = user;
+        this.balance = amount;
+    }
 }

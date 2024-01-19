@@ -24,7 +24,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne(mappedBy = "orderDetail")
+    @OneToOne(mappedBy = "product")
     private OrderDetail orderDetail;
 
     @NotNull
