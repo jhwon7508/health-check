@@ -7,6 +7,7 @@ import com.example.healthcheck.domain.user.repository.UserRepository;
 import com.example.healthcheck.domain.user.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +21,7 @@ public class BalanceServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @InjectMocks
     private BalanceService balanceService;
 
     @BeforeEach

@@ -11,6 +11,7 @@ import com.example.healthcheck.domain.common.enums.ResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,6 +38,8 @@ public class OrderServiceTest {
     private OrderDetailRepository orderDetailRepository;
     @Mock
     private ApplicationEventPublisher dataPlatformCenter;
+
+    @InjectMocks
     private OrderService orderService;
 
     @BeforeEach
