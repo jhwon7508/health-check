@@ -2,8 +2,9 @@
 FROM adoptopenjdk:11-jdk-hotspot AS builder
 
 # ARG를 사용하여 환경 변수 SPRING_PROFILES_ACTIVE 설정, ENV를 사용하여 ARG로부터 환경 변수 설정
-ARG SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+ARG SPRING_PROFILES_ACTIVE
 ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+ENV JASYPT_ENCRYPTOR_PASSWORD=암호화키
 
 # 이미지를 생성한 사람을 명시하는 라벨 추가
 LABEL authors="alisonjung"

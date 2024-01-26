@@ -14,6 +14,7 @@ import com.example.healthcheck.domain.common.enums.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,8 +66,8 @@ public class CommerceController {
 
     //    @Operation(summary = "상품 목록 조회 API")
     @GetMapping("/product/all")
-    public ResponseEntity<?> getAllProducts() {
-        Page<ProductResponseDTO> productList = productService.getAllProducts();
+    public ResponseEntity<?> getAllProducts(Pageable pageable) {
+        Page<ProductResponseDTO> productList = productService.getAllProducts(pageable);
         return ResponseEntity.ok(productList);
     }
 

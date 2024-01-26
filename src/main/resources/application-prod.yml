@@ -1,6 +1,41 @@
 server:
   port: 8888
+
 spring:
   config:
     activate:
       on-profile: prod
+
+#  datasource:
+#    driver-class-name : com.mysql.cj.jdbc.Driver
+#    url: ${DB_URL}
+#    username: admin
+#    password: ${DB_PASSWORD}
+
+  datasource:
+    url: jdbc:h2:mem:test_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+
+  cache:
+    type: simple
+    cache-names: daily-popular
+    simple:
+      cache-name-configs:
+        products:
+          time-to-live: 86400000 # 24시간
+
+logging:
+  level:
+    org.springframework: DEBUG
+    org.hibernate: DEBUG

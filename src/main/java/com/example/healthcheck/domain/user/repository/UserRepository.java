@@ -12,13 +12,3 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 //    BalanceResponseDTO chargeBalance(BalanceDTO balanceDto);
 //    BalanceResponseDTO checkBalance(String userId);
 }
-
-//@Repository
-//public interface UserRepository{
-//    BalanceResponseDTO chargeBalance(BalanceDTO balanceDto);
-//    BalanceResponseDTO checkBalance(String userId);
-//    Long getCurrentBalance(String user);
-//    void deductBalance(String userId, Long orderTotal);
-//    User getUserByUserId(String userId);
-//    void setupUserBalance(String userId, Long balance);
-//}
